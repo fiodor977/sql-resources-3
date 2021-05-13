@@ -1,4 +1,4 @@
---1
+--1------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION factorial (n POSITIVE)
 RETURN INTEGER 
@@ -21,7 +21,8 @@ BEGIN
             return null;
 END factorial;
 
---2
+--2-------------------------------------------------------------
+
 CREATE OR REPLACE procedure datos_ciclista (IN_DORSAL CICLISTA.DORSAL%TYPE) AS
 
 -- Cursor que recorre los puertos donde el ciclista ha salido victorioso
@@ -78,7 +79,8 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE ('SQLERRM: '||  SQLERRM);
 END;
 
---3
+--3-----------------------------------------------------------------------------
+
 CREATE OR REPLACE PROCEDURE alta_ciclista(DOR CICLISTA.DORSAL%TYPE, NOM CICLISTA.NOMBRE%TYPE, ED CICLISTA.EDAD%TYPE, EQ CICLISTA.NOMEQ%TYPE) AS 
 n_count NUMBER;
 n_count2 NUMBER;
@@ -132,7 +134,7 @@ EXCEPTION
 END;
 
 
---4
+--4--------------------------------------------------------------
 
 CREATE OR REPLACE TRIGGER SOBRE_CICLISTA
 BEFORE INSERT OR UPDATE OR DELETE ON CICLISTA
