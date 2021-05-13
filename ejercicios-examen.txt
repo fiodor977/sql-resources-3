@@ -21,7 +21,115 @@ BEGIN
             return null;
 END factorial;
 
+--2
+CREATE OR REPLACE procedure datos_ciclista (IN_DORSAL CICLISTA.DORSAL%TYPE) AS
 
+-- Cursor que recorre los puertos donde el ciclista ha salido victorioso
+CURSOR C_PUERTOS IS
+SELECT *
+FROM PUERTO
+WHERE PUERTO.DORSAL = IN_DORSAL;
+
+-- Variable que almacenará los datos del ciclista
+mi_ciclista CICLISTA%ROWTYPE;
+
+-- Variable que almacenará un puerto de los recorridos
+un_puerto C_PUERTOS%ROWTYPE;
+
+-- Variable de control de excepciones
+sql_err Number;
+
+BEGIN
+DBMS_OUTPUT.PUT_LINE('PROCEDIMIENTO: datos_ciclista('||IN_DORSAL||')');
+
+-- MOSTRAR LA INFO DEL CICLISTA
+sql_err :=0;
+SELECT * INTO mi_ciclista
+FROM CICLISTA
+WHERE DORSAL=IN_DORSAL;
+
+DBMS_OUTPUT.PUT_LINE(mi_ciclista.NOMBRE||' , '||mi_ciclista.EDAD);
+
+
+-- MOSTRAR LAS VICTORIAS DEL CICLISTA
+sql_err :=1;
+DBMS_OUTPUT.PUT_LINE('----VICTORIAS DEL CICLISTA----');
+OPEN C_PUERTOS;
+LOOP
+    FETCH C_PUERTOS INTO un_puerto;
+    EXIT WHEN C_PUERTOS%NOTFOUND;
+    DBMS_OUTPUT.PUT_LINE('NOMBRE DEL PUERTO'||un_puerto.NOMPUERTO||' ALTURA: '||un_puerto.ALTURA||'CATEGORIA: '||un_puerto.CATEGORIA||' PENDIENTE: '||un_puerto.PENDIENTE);
+END LOOP;
+CLOSE C_PUERTOS;
+
+EXCEPTION
+
+    WHEN NO_DATA_FOUND THEN
+    CASE sql_err
+        WHEN 0 THEN
+        DBMS_OUTPUT.PUT_LINE ('CICLISTA NO EXISTE');
+        DBMS_OUTPUT.PUT_LINE ('SQLERRM: '||  SQLERRM);
+        WHEN 1 THEN
+        DBMS_OUTPUT.PUT_LINE ('NO HAY VICTORIAS');
+        DBMS_OUTPUT.PUT_LINE ('SQLERRM: '||  SQLERRM);
+    END CASE;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Se ha producido un error inesperado');
+        DBMS_OUTPUT.PUT_LINE ('SQLERRM: '||  SQLERRM);
+END;
+
+--3
+CREATE OR REPLACE PROCEDURE alta_ciclista(DOR CICLISTA.DORSAL%TYPE, NOM CICLISTA.NOMBRE%TYPE, ED CICLISTA.EDAD%TYPE, EQ CICLISTA.NOMEQ%TYPE) AS 
+n_count NUMBER;
+n_count2 NUMBER;
+EX0 EXCEPTION;
+EX1 EXCEPTION;
+EX2 EXCEPTION;
+BEGIN
+SAVEPOINT SAVE_PATATA;
+ Select count(1) into n_count
+ from CICLISTA
+ Where NOMEQ = EQ;
+
+ Select count(1) into n_count2
+ from CICLISTA
+ Where DORSAL = DOR;
+DBMS_OUTPUT.PUT_LINE(n_count2);
+    IF n_count <=0 AND EQ IS NOT NULL THEN
+    DBMS_OUTPUT.PUT_LINE('No existe el equipo, y se ha creado.');
+    INSERT INTO EQUIPO VALUES(EQ, 'POR DETERMINAR');
+    END IF;
+IF EQ IS NULL THEN
+ RAISE EX0;
+ELSIF n_count2 >0 THEN
+ RAISE EX1;
+ ELSIF DOR IS NULL THEN
+ RAISE EX2;
+ ELSE
+    INSERT INTO CICLISTA VALUES(DOR, NOM, ED, EQ);
+    DBMS_OUTPUT.PUT_LINE('Ciclista creado correctamente.');
+ END IF;
+COMMIT;
+EXCEPTION
+   WHEN no_data_found THEN 
+    dbms_output.put_line('El equipo es nulo.'); 
+    dbms_output.put_line('SQLERRM' || SQLERRM);
+    ROLLBACK;
+    WHEN EX0 THEN
+      dbms_output.put_line('El equipo es nulo.'); 
+    dbms_output.put_line('SQLERRM' || SQLERRM);
+    ROLLBACK;
+    WHEN EX1 THEN
+    dbms_output.put_line('Tiene el dorsal repe.'); 
+    dbms_output.put_line('SQLERRM' || SQLERRM);
+    ROLLBACK;
+    WHEN EX2 THEN
+    dbms_output.put_line('El dorsal es nulo.'); 
+    dbms_output.put_line('SQLERRM' || SQLERRM);
+   WHEN others THEN 
+      dbms_output.put_line('Error!');
+    ROLLBACK;
+END;
 
 
 --4
