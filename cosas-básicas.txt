@@ -1,0 +1,35 @@
+SENTENCIA WHILE{
+-- Usando la instrucción WHILE, desarrollar un programa que sume los 10 primeros números. Mostrar  RES -> 55
+-- por la salida el resultado de dicha suma.
+DECLARE
+ SUMA PLS_INTEGER := 0;
+ NUMERO NUMBER := 0;
+
+BEGIN
+
+WHILE NUMERO<=10 LOOP
+SUMA := SUMA+NUMERO;
+NUMERO:=NUMERO+1;
+END LOOP;
+
+DBMS_OUTPUT.PUT_LINE('Este es el resultado ' || SUMA);
+END;
+}
+
+
+
+SENTENCIA FOR{
+-- Usando la instrucción FOR, desarrollar un programa que sume los 10 primeros números. Mostrar  RES -> 55
+-- por la salida el resultado de dicha suma.
+DECLARE
+ SUMA PLS_INTEGER := 0;
+
+BEGIN
+
+FOR I IN 0..10 LOOP
+SUMA := SUMA+I;
+END LOOP;
+
+DBMS_OUTPUT.PUT_LINE('Este es el resultado ' || SUMA);
+END;
+}
