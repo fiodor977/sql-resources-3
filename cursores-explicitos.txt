@@ -1,0 +1,55 @@
+--Cursor que creas cuando una consulta devuelve más de un dato
+
+-- Recorre todas las filas de la tabla artículo y devuelve ciertas columnas. Un ejemplo por tipo de bucle.
+
+--Usando loop
+DECLARE
+  CURSOR C1 IS
+  SELECT * FROM ARTICULO;
+
+  ART ARTICULO%ROWTYPE;
+
+BEGIN
+  OPEN C1;
+    LOOP
+        FETCH C1 INTO ART;
+        EXIT WHEN C1%NOTFOUND;
+          DBMS_OUTPUT.PUT_LINE(ART.CATEGORIA || ' ' || ART.REFERENCIA);
+
+    END LOOP;
+  CLOSE C1;
+END;
+
+--Usando for
+DECLARE
+  CURSOR C1 IS
+  SELECT * FROM ARTICULO;
+
+  ART ARTICULO%ROWTYPE;
+
+BEGIN
+
+FOR ART IN C1 LOOP
+
+        DBMS_OUTPUT.PUT_LINE(ART.CATEGORIA || ' ' || ART.REFERENCIA);
+
+END LOOP;
+
+END;
+
+--Usando while
+DECLARE
+  CURSOR C1 IS
+  SELECT * FROM ARTICULO;
+
+ART ARTICULO%ROWTYPE;
+
+BEGIN
+OPEN C1;
+  FETCH C1 INTO ART;
+  WHILE C1%FOUND LOOP
+        DBMS_OUTPUT.PUT_LINE(ART.CATEGORIA || ' ' || ART.REFERENCIA);
+        FETCH C1 INTO ART;
+  END LOOP;
+CLOSE C1;
+END;
