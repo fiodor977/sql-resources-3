@@ -1,0 +1,66 @@
+PL/SQL abre implícitamente un cursor cuando procesa un comando SQL que no esté asociado a un cursor que tú hayas creado (cursor explícito)
+
+------------------------------------------------------
+
+--Comprueba de que exista un dato en una columna
+--Usa count() en un cursor implícito para contar los resultados de un criterio dado. Si la cuenta es > 0 es que existe, en caso contrario no existe.
+
+Declare
+  n_count number;
+Begin
+  Select count(1) into n_count 
+   from emp
+   Where job = 'CLERK';
+
+  if n_count > 0 then
+    -- entra si existe
+    dbms_output.put_line('record exists.');
+  else
+    -- entra si no existe
+    dbms_output.put_line('record does not exists.');
+  end if;
+End;
+
+-- Otra forma de hacerlo
+-- Usa el atributo de cursores %ROWCOUNT para contar la cantidad de resultados
+
+DECLARE
+  SAL VARCHAR2(30);
+  LLEG VARCHAR2(30);
+BEGIN
+  SELECT SALIDA, LLEGADA INTO SAL, LLEG FROM ETAPA
+  WHERE DORSAL=3;
+  DBMS_OUTPUT.PUT_LINE('REGISTROS DEVUELTOS: '|| SQL%ROWCOUNT);
+  
+  --Entra si la consulta ha devuelto un resultado, usando el atributo %FOUND
+  IF SQL%FOUND THEN
+    dbms_output.put_line('DATOS DE LA ETAPA: '|| SAL ||', '|| LLEG);
+  END IF;
+  
+  
+  
+    --Entra si la consulta ha devuelto un resultado, usando el atributo %FOUND
+  IF SQL%FOUND THEN
+    dbms_output.put_line('DATOS DE LA ETAPA: '|| SAL ||', '|| LLEG);
+  END IF;
+  
+  --Aqui entra si no encuentra resultado, otra forma de hacerlo
+  IF SQL%NOTFOUND THEN
+    dbms_output.put_line('Ese puerto no existe');
+  else
+    dbms_output.put_line('Puerto:'||nombre_p);
+    dbms_output.put_line('Altura:'||altura_p);
+  END IF;
+END;
+
+------------------------------------------------------------
+
+--Devuelve el nombre y la edad del ciclista con dorsal 1
+
+DECLARE
+--RCICLISTA es una fila de la tabla CICLISTA
+ RCICLISTA CICLISTA%ROWTYPE;
+BEGIN
+ SELECT * INTO RCICLISTA FROM CICLISTA WHERE DORSAL=1;
+ DBMS_OUTPUT.PUT_LINE(RCICLISTA.NOMBRE || '' || RCICLISTA.EDAD);
+ END;
