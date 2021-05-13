@@ -33,3 +33,20 @@ END LOOP;
 DBMS_OUTPUT.PUT_LINE('Este es el resultado ' || SUMA);
 END;
 
+-------------------------------------------------------------------------------------------------------
+
+EXIT y EXIT WHEN
+
+DECLARE
+x NUMBER := 0;
+BEGIN
+ LOOP
+  DBMS_OUTPUT.PUT_LINE('En el bucle: x = ' || TO_CHAR(x));
+  x := x + 1;
+  -- Sale del bucle cuando se cumpla la condición. Usando solo EXIT; saldra cuando llegue a la instrucción
+  EXIT WHEN x > 3;
+ END LOOP;
+ 
+-- Después de la sentencia EXIT, el control se recupera aquí
+DBMS_OUTPUT.PUT_LINE('Después del bucle: x = ' || TO_CHAR(x));
+END;
