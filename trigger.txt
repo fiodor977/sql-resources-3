@@ -1,1 +1,84 @@
+----------
+FUNCIONES
+----------
+DECLARE
+  radio NUMBER;
+  area NUMBER;
+  pi CONSTANT NUMBER := 3.1415;
+  
+  -- Declaramos la función con FUNCTION y la definimos.
+  -- Encabezado de la función
+  FUNCTION area_circulo(r NUMBER) RETURN NUMBER AS
+  
+  --Acaba el encabezado, Comienza parte declarativa de la función
 
+  area NUMBER;
+   mensaje_error VARCHAR2(30) := 'Error al hacer los cálculos';
+BEGIN
+  -- Comienza parte ejecutable
+    area := pi * r ** 2;
+  -- Devolución de un valor al punto de invocación
+  RETURN area;
+  EXCEPTION
+  -- Parte manejo de errores
+  WHEN VALUE_ERROR THEN
+    DBMS_OUTPUT.PUT_LINE(mensaje_error);
+
+END area_circulo;
+
+BEGIN
+  radio := 5.15;
+  area := area_circulo(radio); -- Invocacion
+  DBMS_OUTPUT.PUT_LINE ('El área es : ' || TO_CHAR(area));
+  
+  radio := 2.75;
+  area := area_circulo(radio); -- Invocacion
+  DBMS_OUTPUT.PUT_LINE ('El área es : ' || TO_CHAR(area));
+  
+  radio := 3.85;
+  area := area_circulo(radio); -- Invocacion
+  DBMS_OUTPUT.PUT_LINE ('El área es : ' || TO_CHAR(area));
+END;
+
+----------------------------------------------------
+Procedimientos
+--------------
+
+DECLARE
+  nombre cliente.nombre%TYPE;
+  apellidos cliente.apellidos%TYPE;
+  email cliente.email%TYPE;
+  dominio VARCHAR2(8) := ‘empresa.com’;
+  
+  -- Declaramos el procedimiento con PROCEDURE y lo definimos.
+  -- Encabezado del procedimiento
+  PROCEDURE crear_email(no VARCHAR2, ap VARCHAR2, emp VARCHAR2) IS
+  -- Acaba el encabezado
+  -- Comienza parte declarativa
+  mensaje_error VARCHAR2(30) := 'Dirección email muy larga';
+BEGIN
+  -- Comienza parte ejecutable
+  email := no|| '.' || ap || '@' || emp;
+  EXCEPTION
+    -- Parte manejo de errores
+    WHEN VALUE_ERROR THEN
+    DBMS_OUTPUT.PUT_LINE(mensaje_error);
+
+END crear_email;
+
+BEGIN
+  nombre := 'Juan';
+  apellidos := 'García';
+  
+  crear_email(nombre, apellidos, dominio); -- Invocacion
+  DBMS_OUTPUT.PUT_LINE ('Email es: ' || email);
+  
+  crear_email(apellidos, nombre, dominio); -- Invocación
+  DBMS_OUTPUT.PUT_LINE ('Email es: ' || email);
+  
+  nombre := 'Elisa Isabel';
+  apellidos := 'Santamaria';
+  
+  crear_email(nombre, apellidos, dominio);
+  DBMS_OUTPUT.PUT_LINE ('Email es: ' || email);
+END;
