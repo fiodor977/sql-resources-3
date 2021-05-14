@@ -150,3 +150,20 @@ BEGIN
     	DBMS_OUTPUT.PUT_LINE('SE ESTAN BORRANDO COSITAS');
     END IF;
 END;
+
+---------------------------------------------------------------
+
+POSIBLE EJERCICIO DE RECURSIVIDAD (TABLAS DE MULTIPLICAR)
+
+CREATE OR REPLACE FUNCTION multiplicar(tabla INTEGER, numVeces INTEGER)
+RETURN INTEGER 
+is
+BEGIN
+    IF numVeces=1 THEN
+    DBMS_OUTPUT.PUT_LINE(tabla || ' x ' || numVeces || ' = ' || (tabla * numVeces));
+		RETURN 0;
+	elsIF numVeces>1 THEN
+        DBMS_OUTPUT.PUT_LINE(tabla || ' x ' || numVeces || ' = ' || (tabla * numVeces));
+		RETURN multiplicar(tabla,numVeces-1);
+	END IF;
+END multiplicar;
