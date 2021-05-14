@@ -4,15 +4,20 @@
 
 --Usando loop
 DECLARE
+  -- Declara un cursor que tiene más de un registro de resultados
   CURSOR C1 IS
   SELECT * FROM ARTICULO;
 
+  // Declara un fila de la tabla ARTICULO
   ART ARTICULO%ROWTYPE;
 
 BEGIN
   OPEN C1;
     LOOP
+      -- Obtiene una fila del registro y la mete en ART
         FETCH C1 INTO ART;
+        
+        -- Sale del bucle cuando no hay más resultados
         EXIT WHEN C1%NOTFOUND;
           DBMS_OUTPUT.PUT_LINE(ART.CATEGORIA || ' ' || ART.REFERENCIA);
 
@@ -46,9 +51,12 @@ ART ARTICULO%ROWTYPE;
 
 BEGIN
 OPEN C1;
+  -- Obtiene una fila del resultado del cursor
   FETCH C1 INTO ART;
+  -- Se ejecuta el bucle mientras haya resultados
   WHILE C1%FOUND LOOP
         DBMS_OUTPUT.PUT_LINE(ART.CATEGORIA || ' ' || ART.REFERENCIA);
+        -- Obtiene el siguiente registro para la siguiente iteracción del bucle
         FETCH C1 INTO ART;
   END LOOP;
 CLOSE C1;
