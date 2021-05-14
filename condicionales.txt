@@ -1,1 +1,69 @@
+Operadores de comparación PL/SQL
 
+=, <, >, <=, >=, <>, !=, ~=, ^=, IS NULL, LIKE, BETWEEN, IN --- Comparaciones
+NOT --- Negación lógica
+AND --- Conjunción lógica
+OR --- Disyunción lógica
+
+-------------------------------
+
+IF ventas > (cuota + 200) THEN
+  bono := (ventas – cuota ) / 4;
+  bono_calculado := TRUE;
+ELSE
+  bono := 50;
+  END IF;
+  
+  -------------------------------
+  
+IF ventas – cuota > 50000 THEN
+    bono := 500;
+ELSIF ventas – cuota > 35000 THEN
+    bono := 350;
+ELSIF ventas – cuota > 15000 THEN
+    bono := 150;
+ELSIF ventas – cuota > 5000 THEN
+    bono := 50;
+ELSE
+    bono := 0;
+END IF;
+
+----------------------------------
+
+DECLARE
+  calificacion CHAR(1);
+BEGIN
+  calificacion := 'B';
+  CASE calificacion
+    WHEN 'A' THEN DBMS_OUTPUT.PUT_LINE('Excelente');
+    WHEN 'B' THEN DBMS_OUTPUT.PUT_LINE('Muy bueno');
+    WHEN 'C' THEN DBMS_OUTPUT.PUT_LINE('Bueno');
+    WHEN 'D' THEN DBMS_OUTPUT.PUT_LINE('Aceptable');
+    WHEN 'F' THEN DBMS_OUTPUT.PUT_LINE('Malo');
+    ELSE
+      DBMS_OUTPUT.PUT_LINE('No existe la calificación');
+  END CASE;
+END;
+
+--------------------------------
+
+DECLARE
+  calificacion CHAR(1);
+BEGIN
+  calificacion := 'B';
+  CASE
+    WHEN calificacion = 'A'
+    THEN DBMS_OUTPUT.PUT_LINE('Excelente');
+    WHEN calificacion = 'B'
+      THEN DBMS_OUTPUT.PUT_LINE('Muy bueno');
+    WHEN calificacion = 'C'
+      THEN DBMS_OUTPUT.PUT_LINE('Bueno');
+    WHEN calificacion = 'D'
+      THEN DBMS_OUTPUT.PUT_LINE('Aceptable');
+    WHEN calificacion = 'F'
+      THEN DBMS_OUTPUT.PUT_LINE('Malo');
+
+     ELSE
+      DBMS_OUTPUT.PUT_LINE('No existe la calificación');
+  END CASE;
+END;
