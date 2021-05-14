@@ -1,1 +1,114 @@
+-- El apartado excepciones se pone justo antes del END, sino peta
+------------------------------------------
+--EXCEPCIONES GENERALES
+
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE ('Datos no encontrados');
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE ('Ha habido un error, por ejemplo, puede que la
+    consulta haya devuelto más de 1 registro.');
+END;
+
+-----------------------------------
+
+--EXCEPCIONES GENERALES CON CÓDIGOS DE ERROR
+
+  <<actualiza_precio>>
+DECLARE
+  existencias ARTICULO.EXISTENCIAS%TYPE;
+  referencia ARTICULO.REFERENCIA%TYPE:= 'CARN0001';
+  precio_venta ARTICULO.PRECIO_VENTA%TYPE;
+  
+  -- Variable que se crea para ubicar evento NO_DATA_FOUND y
+  -- poder mostrar un mensaje personalizado al tipo de error.
+  sql_err PLS_INTEGER := 0;
+
+BEGIN
+  sql_err := 1;
+  
+  SELECT EXISTENCIAS
+  INTO existencias
+  FROM ARTICULO
+  WHERE REFERENCIA = actualiza_precio.referencia;
+  
+  IF existencias > 10 THEN
+    sql_err:= 2;
+    SELECT PRECIO_VENTA
+    INTO precio_venta
+    FROM ARTICULO
+    WHERE referencia = actualiza_precio.referencia;
+    
+    precio_venta:= precio_venta - precio_venta * 0.2;
+    
+      IF precio_venta < 5 THEN
+      precio_venta:= 5;
+      END IF;
+      
+    UPDATE ARTICULO SET PRECIO_VENTA = actualiza_precio.precio_venta
+    WHERE REFERENCIA = actualiza_precio.referencia;
+    
+    DBMS_OUTPUT.PUT_LINE('Existencias: ' || TO_CHAR(existencias));
+    DBMS_OUTPUT.PUT_LINE('Precio actualizado a: ' || TO_CHAR(precio_venta));
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Las existencias son menores de 10. No se actualiza el
+    precio de venta');
+  END IF;
+  
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      IF sql_err = 1 THEN
+        DBMS_OUTPUT.PUT_LINE('El artículo CARN0001 no existe. Falla SELECT 1');
+      ELSE
+        DBMS_OUTPUT.PUT_LINE('El artículo CARN0001 no existe. Falla SELECT 2');
+      END IF;
+    WHEN OTHERS THEN
+      DBMS_OUTPUT.PUT_LINE('Se ha producido un error no controlado');
+END;
+
+-------------------------------------------------------
+
+-- EXCEPCIONES GENERALES USANDO LOS ATRIBUTOS DE PL/SQL SQLERRM Y SQLCODE
+
+DECLARE
+    V_CLIENTE CLIENTE%ROWTYPE;
+BEGIN
+    SELECT * INTO V_CLIENTE 
+    FROM CLIENTE 
+    WHERE NIF LIKE '11111111R';
+    
+    DBMS_OUTPUT.PUT_LINE ('La razón social del cliente es: ' || V_CLIENTE.RAZON_SOCIAL);
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE ('Excepción NO HAY DATOS');
+            DBMS_OUTPUT.PUT_LINE ('SQLERRM: ' || SQLERRM);
+            DBMS_OUTPUT.PUT_LINE ('SQLCODE: ' || SQLCODE);
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE ('Error no definido');
+END;
+
+------------------------------------------------------
+
+--EXCEPCIONES CREADA POR EL USUARIO
+
+DECLARE
+    DATO_VENTAS CLIENTE.VENTAS%TYPE;
+    VENTAS_NULAS EXCEPTION;
+BEGIN
+    SELECT VENTAS INTO DATO_VENTAS 
+    FROM CLIENTE 
+    WHERE NIF = '30000001A';
+
+    IF DATO_VENTAS IS NULL THEN
+        RAISE VENTAS_NULAS;
+    END IF;
+
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE ('No existe el cliente');
+        WHEN VENTAS_NULAS THEN
+            DBMS_OUTPUT.PUT_LINE ('Ventas nulas');
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE ('Otro error');
+END;
 
