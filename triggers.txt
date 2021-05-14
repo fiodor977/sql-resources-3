@@ -1,0 +1,47 @@
+
+CREATE OR REPLACE TRIGGER SOBRE_CICLISTA
+BEFORE INSERT OR UPDATE OR DELETE ON CICLISTA
+FOR EACH ROW
+
+BEGIN
+
+    IF INSERTING THEN
+    	DBMS_OUTPUT.PUT_LINE('SE ESTAN INSERTANDO COSITAS');
+    ELSIF UPDATING THEN 
+    	DBMS_OUTPUT.PUT_LINE('SE ESTAN ACTUALIZANDO COSITAS');
+    ELSIF DELETING THEN 
+    	DBMS_OUTPUT.PUT_LINE('SE ESTAN BORRANDO COSITAS');
+    END IF;
+END;
+
+
+-----------------------------------------------------------
+
+CREATE OR REPLACE TRIGGER visualiza_aumento_sueldo
+BEFORE DELETE OR INSERT OR UPDATE ON employees
+FOR EACH ROW
+WHEN (NEW.cargo <> 'Presidente') -- No visualiza información del presidente
+
+DECLARE
+  dif_sueldo NUMBER;
+BEGIN
+  dif_sueldo := :NEW.sueldo - :OLD.sueldo;
+  DBMS_OUTPUT.PUT(:NEW.nombre || ': ');
+  DBMS_OUTPUT.PUT('Sueldo anterior = ' || :OLD.sueldo || ', ');
+  DBMS_OUTPUT.PUT('Nuevo sueldo = ' || :NEW.sueldo|| ', ');
+  DBMS_OUTPUT.PUT_LINE('Diferencia: ' || dif_sueldo);
+END;
+
+
+--------------------------------------------------------------
+
+CREATE TRIGGER…
+BEFORE INSERT OR UPDATE OF precio_venta OR DELETE ON articulo
+FOR EACH ROW
+
+BEGIN
+  IF INSERTING THEN…
+  ELSIF DELETING THEN…
+   ELSIF UPDATING (‘precio_venta’) THEN…
+  END IF;
+END;
