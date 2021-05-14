@@ -61,3 +61,93 @@ OPEN C1;
   END LOOP;
 CLOSE C1;
 END;
+
+----------------------------------------------------------------
+CURSORES CON PARÁMETROS
+----
+
+DECLARE
+  CURSOR c1 (importe_minimo NUMBER, fecha TIMESTAMP)
+  IS SELECT npedido, cliente, fecha, total_pedido
+  FROM pedido
+  WHERE total_pedido > importe_minimo AND fecha = c1.fecha;
+  numero pedido.npedido%TYPE;
+  
+  cli pedido.cliente%TYPE;
+  fpedido pedido.fecha%TYPE;
+  total pedido.total_pedido%TYPE;
+  dto NUMBER(3,2);
+  total_descuento NUMBER(6,2);
+  cantidad_descontada NUMBER(6,2):= 0;
+BEGIN
+  OPEN c1(200, TO_DATE('04/01/2018'));
+    LOOP
+      FETCH c1 INTO numero, cli, fpedido, total;
+      EXIT WHEN c1%NOTFOUND;
+
+      IF total > 500 THEN
+        dto:= 0.2;
+      ELSE
+        dto:= 0.1;
+      END IF;
+
+      total_descuento:= total - total * dto;
+      cantidad_descontada:= cantidad_descontada + total_descuento;
+
+      UPDATE pedido
+      SET total_pedido = total_pedido – total_descuento;
+      WHERE pedido.npedido = numero;
+
+      DBMS_OUTPUT.PUT_LINE('Pedido: ' || TO_CHAR(numero) || '
+      tiene un ' || TO_CHAR(dto*100) || ' % de descuento adicional');
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE('Se ha descontado un total de: ' ||
+    TO_CHAR(cantidad_descontada) );
+    DBMS_OUTPUT.PUT_LINE('Se han actualizado ' || TO_CHAR(c1%ROWCOUNT)
+    || 'pedidos' );
+  CLOSE c1;
+END;
+
+----------------------------
+Abriendo bucle for para recorrer cursor
+---
+
+DECLARE
+  CURSOR c1 (importe_minimo NUMBER, fecha TIMESTAMP)
+  IS SELECT npedido, cliente, fecha, total_pedido
+  FROM pedido
+  WHERE total_pedido > importe_minimo AND fecha = c1.fecha;
+  
+  dto NUMBER(3,2);
+  total_descuento NUMBER(6,2);
+  cantidad_descontada NUMBER(6,2):= 0;
+  pedidos PLS_INTEGER;
+BEGIN
+  -- No se abre el cursos con OPEN
+  -- Se abre implícitamente con FOR .. LOOP
+  FOR rpedido IN c1(200, TO_DATE('04/01/2018')) LOOP
+    IF rpedido.total > 500 THEN
+      dto:= 0.2;
+    ELSE
+      dto:= 0.1;
+    END IF;
+    
+    total_descuento:= rpedido.total – rpedido.total * dto;
+    cantidad_descontada:= cantidad_descontada + total_descuento;
+    
+    UPDATE pedido
+    SET total_pedido = total_pedido – total_descuento;
+    WHERE pedido.npedido = rpedido.npedido;
+    
+    DBMS_OUTPUT.PUT_LINE('Pedido: ' || TO_CHAR(rpedido.npedido)
+    || ' tiene un ' || TO_CHAR(dto*100) || ' % de descuento adicional');
+
+    pedidos:= c1%ROWCOUNT;
+  END LOOP;
+  
+  DBMS_OUTPUT.PUT_LINE('Se ha descontado un total de: ' ||
+  TO_CHAR(cantidad_descontada) );
+  DBMS_OUTPUT.PUT_LINE('Se han actualizado ' || TO_CHAR(pedidos) ||
+  'pedidos' );
+END;
