@@ -9,7 +9,7 @@ DECLARE
   
   -- Declaramos la función con FUNCTION y la definimos.
   -- Encabezado de la función
-  FUNCTION area_circulo(r NUMBER) RETURN NUMBER AS
+  CREATE OR REPLACE FUNCTION area_circulo(r NUMBER) RETURN NUMBER AS
   
   --Acaba el encabezado, Comienza parte declarativa de la función
 
@@ -53,7 +53,7 @@ DECLARE
   
   -- Declaramos el procedimiento con PROCEDURE y lo definimos.
   -- Encabezado del procedimiento
-  PROCEDURE crear_email(no VARCHAR2, ap VARCHAR2, emp VARCHAR2) IS
+  CREATE OR REPLACE PROCEDURE crear_email(no VARCHAR2, ap VARCHAR2, emp VARCHAR2) IS
   -- Acaba el encabezado
   -- Comienza parte declarativa
   mensaje_error VARCHAR2(30) := 'Dirección email muy larga';
